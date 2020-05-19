@@ -44,6 +44,7 @@ namespace IPTools
                 throw new InvalidDataException("Invalid mask!");
         }
         public Mask(int first, int second, int third, int fourth) : base(first, second, third, fourth) { }
+        public static Mask FromPrefix(int prefix) => new Mask(Convert.ToInt32(new string('1', prefix).PadRight(32, '0')));
 
         public int Prefix => Binary.Count(x => x == '1');
 

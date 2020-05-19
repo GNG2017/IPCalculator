@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPTools", "IPTools\IPTools.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPCalculator", "IPCalculator\IPCalculator.csproj", "{A72DF01F-B09C-4B19-8882-3966FF82BE88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCalc", "IPCalc\IPCalc.csproj", "{21714C59-4980-4DD5-BD38-74B543934E42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCalc", "IPCalc\IPCalc.csproj", "{87A98B4C-7FDA-4191-9CE0-B8C80E1D3604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{A72DF01F-B09C-4B19-8882-3966FF82BE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A72DF01F-B09C-4B19-8882-3966FF82BE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A72DF01F-B09C-4B19-8882-3966FF82BE88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21714C59-4980-4DD5-BD38-74B543934E42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21714C59-4980-4DD5-BD38-74B543934E42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21714C59-4980-4DD5-BD38-74B543934E42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21714C59-4980-4DD5-BD38-74B543934E42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87A98B4C-7FDA-4191-9CE0-B8C80E1D3604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87A98B4C-7FDA-4191-9CE0-B8C80E1D3604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87A98B4C-7FDA-4191-9CE0-B8C80E1D3604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87A98B4C-7FDA-4191-9CE0-B8C80E1D3604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
