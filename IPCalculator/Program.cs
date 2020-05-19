@@ -1,6 +1,30 @@
-﻿using IPTools;
+﻿/* MIT License
+ *
+ * Copyright (c) 2020 Glöckl Nimród
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+using IPTools;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace IPCalculator
@@ -20,7 +44,7 @@ namespace IPCalculator
                 Console.WriteLine("1: |    Host + Subnet = Network         |     \"A hálózati cím meghatározása\"       - 9.1.3.6/9.1.3.13");
                 Console.WriteLine("2: | Network + Subnet = Num of hosts    |  \"Az állomások számának meghatározása\"   - 9.1.3.7/9.1.3.14");
                 Console.WriteLine("3: | Network + Subnet = Network details | \"Az érvényes állomáscímek meghatározása\" - 9.1.3.8/9.1.3.15");
-                Console.WriteLine("4: | Network + mask + num of hosts = More subnets |");
+                Console.WriteLine("4: | Network + mask + num of hosts = More subnets");
                 Console.WriteLine("5: Exit");
                 NetworkAddress network;
                 Mask mask;
@@ -32,7 +56,7 @@ namespace IPCalculator
                             var host = GetHostAddress();
                             if (host == null)
                                 break;
-                            mask = GetSubnetMask();
+                            mask = GetMask();
                             if (mask == null)
                                 break;
                             NetworkAddress networkAddress;
@@ -71,7 +95,7 @@ namespace IPCalculator
                             network = GetNetworkAddress();
                             if (network == null)
                                 break;
-                            mask = GetSubnetMask();
+                            mask = GetMask();
                             if (mask == null)
                                 break;
                             int numOfValidHosts;
@@ -107,7 +131,7 @@ namespace IPCalculator
                             network = GetNetworkAddress();
                             if (network == null)
                                 break;
-                            mask = GetSubnetMask();
+                            mask = GetMask();
                             if (mask == null)
                                 break;
                             HostAddress first;
@@ -165,7 +189,7 @@ namespace IPCalculator
                             if (numOfHosts == -1) break;
                             network = GetNetworkAddress();
                             if (network == null) break;
-                            mask = GetSubnetMask();
+                            mask = GetMask();
                             if (mask == null) break;
                             var submask = mask.GetSubnetMaskForNumOfHosts(numOfHosts);
                             Console.WriteLine("Subnet mask: " + submask);
@@ -188,25 +212,22 @@ namespace IPCalculator
                             {
                                 Console.WriteLine($"#{i + 1} network:");
                                 Console.WriteLine("Network address: " + networks[i]);
-                                var firstAddress = networks[i].GetFistUseableHostIP(submask);
-                                Console.WriteLine("First host address: " + firstAddress);
-                                var lastAddress = networks[i].GetLastUseableHostIP(submask);
-                                Console.WriteLine("Last host address: " + lastAddress);
-                                var broadcastAddress = networks[i].GetBroadcastAddress(submask);
-                                Console.WriteLine("Broadcast address: " + broadcastAddress);
+                                Console.WriteLine("First host address: " + networks[i].FirstHost);
+                                Console.WriteLine("Last host address: " + networks[i].LastHost);
+                                Console.WriteLine("Broadcast address: " + networks[i].BroadcastAddress);
                                 writer.WriteLine($" {i + 1}. Hálózat:");
                                 writer.WriteLine($"  Hálózatcím:");
-                                writer.WriteLine($"   {networks[i].ToBinaryString()}");
-                                writer.WriteLine($"   {networks[i]}");
+                                writer.WriteLine($"   {networks[i].Address.ToBinaryString()}");
+                                writer.WriteLine($"   {networks[i].Address}");
                                 writer.WriteLine($"  Első kiosztható cím:");
-                                writer.WriteLine($"   {firstAddress.ToBinaryString()}");
-                                writer.WriteLine($"   {firstAddress}");
+                                writer.WriteLine($"   {networks[i].FirstHost.ToBinaryString()}");
+                                writer.WriteLine($"   {networks[i].FirstHost}");
                                 writer.WriteLine($"  Utolsó kioszható cím:");
-                                writer.WriteLine($"   {lastAddress.ToBinaryString()}");
-                                writer.WriteLine($"   {lastAddress}");
+                                writer.WriteLine($"   {networks[i].LastHost.ToBinaryString()}");
+                                writer.WriteLine($"   {networks[i].LastHost}");
                                 writer.WriteLine($"  Szórási cím:");
-                                writer.WriteLine($"   {broadcastAddress.ToBinaryString()}");
-                                writer.WriteLine($"   {broadcastAddress}");
+                                writer.WriteLine($"   {networks[i].BroadcastAddress.ToBinaryString()}");
+                                writer.WriteLine($"   {networks[i].BroadcastAddress}");
                                 writer.WriteLine();
                             }
                             break;
@@ -223,7 +244,7 @@ namespace IPCalculator
                             break;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("An unknown error occured!");
@@ -233,6 +254,30 @@ namespace IPCalculator
                     Console.WriteLine();
                 }
             }
+        }
+
+        static Dictionary<int, int> GetVLSMNumbers()
+        {
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            Console.WriteLine("Please write down the minimum number of hosts per network PER LINE! If you finish just press enter.");
+            while (true)
+            {
+                Console.Write("> ");
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out int result))
+                {
+                    if (dict.ContainsKey(result))
+                        dict[result]++;
+                    else
+                        dict.Add(result, 1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            dict = dict.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            return dict;
         }
 
         static int GetNumOfHosts()
@@ -271,7 +316,7 @@ namespace IPCalculator
             }
         }
 
-        static Mask GetSubnetMask()
+        static Mask GetMask()
         {
             try
             {

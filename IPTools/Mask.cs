@@ -1,14 +1,51 @@
-﻿using System;
+﻿/* MIT License
+ *
+ * Copyright (c) 2020 Glöckl Nimród
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace IPTools
 {
     public class Mask : IPAddress
     {
+        private static Regex MaskRegex = new Regex(@"^1+0+$");
         public Mask() { }
-        public Mask(string IP) : base(IP) { }
-        public Mask(int num) : base(num) { }
+        public Mask(string IP) : base(IP)
+        {
+            if (!MaskRegex.IsMatch(Binary))
+                throw new InvalidDataException("Invalid mask!");
+        }
+        public Mask(int num) : base(num)
+        {
+            if (!MaskRegex.IsMatch(Binary))
+                throw new InvalidDataException("Invalid mask!");
+        }
         public Mask(int first, int second, int third, int fourth) : base(first, second, third, fourth) { }
+
+        public int Prefix => Binary.Count(x => x == '1');
 
         public int GetNumOfValidHosts()
         {
@@ -28,7 +65,7 @@ namespace IPTools
             return new Mask(Convert.ToInt32(submask, 2));
         }
 
-        public List<NetworkAddress> GetNetworksForSubnet(NetworkAddress NetAddress, Mask SubnetMask)
+        public List<Network> GetNetworksForSubnet(NetworkAddress NetAddress, Mask SubnetMask)
         {
             var mask = Binary;
             var subMask = SubnetMask.Binary;
@@ -42,11 +79,11 @@ namespace IPTools
             }
             var subLenght = subMask.TrimEnd('0').Length - mask.TrimEnd('0').Length;
             var sub = Convert.ToInt32(new string('1', subLenght), 2);
-            List<NetworkAddress> list = new List<NetworkAddress>();
+            List<Network> list = new List<Network>();
             for (int i = 0; i < sub; i++)
             {
-                var subNetwork = (mainNetwork + Convert.ToString(i, 2).PadLeft(subLenght,'0')).PadRight(32, '0');
-                list.Add(new NetworkAddress(Convert.ToInt32(subNetwork, 2)));
+                var subNetwork = (mainNetwork + Convert.ToString(i, 2).PadLeft(subLenght, '0')).PadRight(32, '0');
+                list.Add(new Network(new NetworkAddress(Convert.ToInt32(subNetwork, 2)), SubnetMask));
             }
             return list;
         }

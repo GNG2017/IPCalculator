@@ -20,29 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using System;
 
 namespace IPTools
 {
-    public class HostAddress : IPAddress
+    public class Network
     {
-        public HostAddress() { }
-        public HostAddress(int num) : base(num) { }
-        public HostAddress(string IP) : base(IP) { }
-
-        public NetworkAddress GetNetworkAddress(Mask smask)
+        public Network(NetworkAddress network, Mask mask)
         {
-            var host = Binary;
-            var mask = smask.Binary;
-            var network = "";
-            for (int i = 0; i < 32; i++)
-            {
-                if (mask[i] == '1')
-                    network += host[i];
-                else
-                    network += '0';
-            }
-            return new NetworkAddress(Convert.ToInt32(network, 2));
+            Address = network;
+            Mask = mask;
+            FirstHost = Address.GetFistUseableHostIP(Mask);
+            LastHost = Address.GetLastUseableHostIP(Mask);
+            BroadcastAddress = Address.GetBroadcastAddress(Mask);
         }
+
+        public Mask Mask;
+        public NetworkAddress Address;
+        public HostAddress FirstHost;
+        public HostAddress LastHost;
+        public IPAddress BroadcastAddress;
+
+        public override string ToString() => $"{Address}/{Mask.Prefix}";
     }
 }
