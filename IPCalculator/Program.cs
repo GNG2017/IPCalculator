@@ -170,13 +170,44 @@ namespace IPCalculator
                             var submask = mask.GetSubnetMaskForNumOfHosts(numOfHosts);
                             Console.WriteLine("Subnet mask: " + submask);
                             var networks = mask.GetNetworksForSubnet(network, submask);
+                            writer.WriteLine("Alhálózatok");
+                            writer.WriteLine();
+                            writer.WriteLine("Cím:");
+                            writer.WriteLine($" {network.ToBinaryString()}");
+                            writer.WriteLine($" {network}");
+                            writer.WriteLine("Maszk:");
+                            writer.WriteLine($" {mask.ToBinaryString()}");
+                            writer.WriteLine($" {mask}");
+                            writer.WriteLine();
+                            writer.WriteLine("Alhálózati maszk:");
+                            writer.WriteLine($" {submask.ToBinaryString()}");
+                            writer.WriteLine($" {submask}");
+                            writer.WriteLine();
+                            writer.WriteLine("Hálózati felbontás:");
                             for (int i = 0; i < networks.Count; i++)
                             {
                                 Console.WriteLine($"#{i + 1} network:");
                                 Console.WriteLine("Network address: " + networks[i]);
-                                Console.WriteLine("First host address: " + networks[i].GetFistUseableHostIP(submask));
-                                Console.WriteLine("Last host address: " + networks[i].GetLastUseableHostIP(submask));
-                                Console.WriteLine("Broadcast address: " + networks[i].GetBroadcastAddress(submask));
+                                var firstAddress = networks[i].GetFistUseableHostIP(submask);
+                                Console.WriteLine("First host address: " + firstAddress);
+                                var lastAddress = networks[i].GetLastUseableHostIP(submask);
+                                Console.WriteLine("Last host address: " + lastAddress);
+                                var broadcastAddress = networks[i].GetBroadcastAddress(submask);
+                                Console.WriteLine("Broadcast address: " + broadcastAddress);
+                                writer.WriteLine($" {i + 1}. Hálózat:");
+                                writer.WriteLine($"  Hálózatcím:");
+                                writer.WriteLine($"   {networks[i].ToBinaryString()}");
+                                writer.WriteLine($"   {networks[i]}");
+                                writer.WriteLine($"  Első kiosztható cím:");
+                                writer.WriteLine($"   {firstAddress.ToBinaryString()}");
+                                writer.WriteLine($"   {firstAddress}");
+                                writer.WriteLine($"  Utolsó kioszható cím:");
+                                writer.WriteLine($"   {lastAddress.ToBinaryString()}");
+                                writer.WriteLine($"   {lastAddress}");
+                                writer.WriteLine($"  Szórási cím:");
+                                writer.WriteLine($"   {broadcastAddress.ToBinaryString()}");
+                                writer.WriteLine($"   {broadcastAddress}");
+                                writer.WriteLine();
                             }
                             break;
                         case "5":
