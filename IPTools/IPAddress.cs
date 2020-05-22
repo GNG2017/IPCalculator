@@ -119,6 +119,16 @@ namespace IPTools
             }
             return EClassType.None;
         }
+
+        public static bool operator ==(IPAddress address1, IPAddress address2)
+        {
+            if (address1 is null)
+                return address2 is null;
+
+            return address1.Binary.Equals(address2.Binary);
+        }
+
+        public static bool operator !=(IPAddress address1, IPAddress address2) => !(address1 == address2);
     }
 
     public enum EClassType
