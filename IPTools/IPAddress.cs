@@ -89,5 +89,40 @@ namespace IPTools
         public override string ToString() => $"{First}.{Second}.{Third}.{Fourth}";
 
         public string ToBinaryString() => $"{FirstBinary}.{SecondBinary}.{ThirdBinary}.{FourthBinary}";
+
+        public EClassType GetClass()
+        {
+            if (IP >= 16777217) // 1.0.0.1
+            {
+                if (IP <= 2130706430) // 126.255.255.254
+                    return EClassType.A;
+                if (IP >= -2147418111) // 128.1.0.1
+                {
+                    if (IP <= -1073741826) // 192.255.255.254
+                        return EClassType.B;
+                    if (IP >= -1073741567) // 192.0.1.1
+                    {
+                        if (IP <= -536871170) // 223.255.254.254
+                            return EClassType.C;
+                        if (IP >= -536870912) // 224.0.0.0
+                        {
+                            if (IP <= -268435457) // 239.255.255.254
+                                return EClassType.D;
+                            if (IP >= -268435456) // 240.0.0.0
+                            {
+                                if (IP <= -16777218) // 254.255.255.254
+                                    return EClassType.E;
+                            }
+                        }
+                    }
+                }
+            }
+            return EClassType.None;
+        }
+    }
+
+    public enum EClassType
+    {
+        A, B, C, D, E, None = 255
     }
 }

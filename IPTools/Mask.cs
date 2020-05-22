@@ -22,7 +22,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,7 +30,7 @@ namespace IPTools
 {
     public class Mask : IPAddress
     {
-        private static Regex MaskRegex = new Regex(@"^1+0+$");
+        private static readonly Regex MaskRegex = new Regex(@"^1+0+$");
         public Mask() { }
         public Mask(string IP) : base(IP)
         {
