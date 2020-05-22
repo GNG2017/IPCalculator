@@ -41,5 +41,7 @@ namespace IPTools
         public IPAddress BroadcastAddress;
 
         public override string ToString() => $"{Address}/{Mask.Prefix}";
+
+        public bool Contains(HostAddress host) => FirstHost <= host && LastHost >= host;
     }
 }

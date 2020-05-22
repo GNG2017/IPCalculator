@@ -44,5 +44,7 @@ namespace IPTools
             }
             return new NetworkAddress(Convert.ToInt32(network, 2));
         }
+
+        public Network GetNetwork(Mask mask) => new Network(GetNetworkAddress(mask), mask);
     }
 }

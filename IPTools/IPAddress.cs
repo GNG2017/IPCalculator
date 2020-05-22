@@ -129,6 +129,12 @@ namespace IPTools
         }
 
         public static bool operator !=(IPAddress address1, IPAddress address2) => !(address1 == address2);
+
+        public static bool operator <(IPAddress address1, IPAddress address2) => address1.IP < address2.IP;
+        public static bool operator >(IPAddress address1, IPAddress address2) => address1.IP > address2.IP;
+
+        public static bool operator <=(IPAddress address1, IPAddress address2) => address1 < address2 || address1 == address2;
+        public static bool operator >=(IPAddress address1, IPAddress address2) => address1 > address2 || address1 == address2;
     }
 
     public enum EClassType
